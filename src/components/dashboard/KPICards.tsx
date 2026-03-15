@@ -1,5 +1,5 @@
 "use client";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Brain, Zap, Waves, Target } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -12,25 +12,29 @@ const kpis = [
   { icon: Target, label: "FOCUS SCORE", value: 94.1, unit: "%", badge: "Stable", badgeType: "secondary" },
 ];
 
-function AnimatedNumber({ value, decimals = 1 }: { value: number; decimals?: number }) {
+function AnimatedNumber({ value, decimals = 1, delay = 0 }: { value: number; decimals?: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const motionValue = useMotionValue(0);
-  const spring = useSpring(motionValue, { stiffness: 60, damping: 20 });
+  const smoothCount = useSpring(motionValue, { stiffness: 50, damping: 15, mass: 0.8 });
+  const display = useTransform(smoothCount, (v) => v.toFixed(decimals));
 
   useEffect(() => {
-    motionValue.set(value);
-  }, [value, motionValue]);
+    const timeout = setTimeout(() => {
+      motionValue.set(value);
+    }, delay * 1000);
+    return () => clearTimeout(timeout);
+  }, [value, motionValue, delay]);
 
   useEffect(() => {
-    const unsubscribe = spring.on("change", (latest) => {
+    const unsubscribe = display.on("change", (latest) => {
       if (ref.current) {
-        ref.current.textContent = latest.toFixed(decimals);
+        ref.current.textContent = latest;
       }
     });
     return unsubscribe;
-  }, [spring, decimals]);
+  }, [display]);
 
-  return <span ref={ref}>0</span>;
+  return <motion.span ref={ref} initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: delay + 0.2, duration: 0.6 }}>0</motion.span>;
 }
 
 export function KPICards() {
@@ -39,16 +43,32 @@ export function KPICards() {
       {kpis.map((kpi, i) => (
         <motion.div
           key={i}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.08, duration: 0.5 }}
+          initial={{ opacity: 0, y: 20, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          whileHover={{ y: -3, boxShadow: "0 8px 30px rgba(255, 77, 0, 0.1)", borderColor: "rgba(255, 77, 0, 0.3)" }}
+          transition={{ delay: 0.7 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Card className="bg-bg-card border-border p-6 relative overflow-hidden">
+          <Card className="bg-bg-card border-border p-6 relative overflow-hidden h-full">
             {/* Top Row */}
             <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 rounded-sm bg-orange/10 flex items-center justify-center">
+              <motion.div
+                className="w-10 h-10 rounded-sm bg-orange/10 flex items-center justify-center"
+                animate={{
+                  boxShadow: [
+                    "0 0 0px rgba(255,77,0,0)",
+                    "0 0 16px rgba(255,77,0,0.3)",
+                    "0 0 0px rgba(255,77,0,0)",
+                  ]
+                }}
+                transition={{
+                  duration: 2,
+                  delay: 1.2 + i * 0.1,
+                  repeat: Infinity,
+                  repeatDelay: 4,
+                }}
+              >
                 <kpi.icon className="w-5 h-5 text-orange" />
-              </div>
+              </motion.div>
               <Badge
                 variant={kpi.badgeType === "success" ? "success" : kpi.badgeType === "destructive" ? "destructive" : "secondary"}
                 className="text-[10px] font-mono"
@@ -65,13 +85,22 @@ export function KPICards() {
             {/* Value */}
             <div className="flex items-baseline gap-1">
               <span className="font-display text-[44px] leading-[1] text-text">
-                <AnimatedNumber value={kpi.value} decimals={kpi.unit === "MB/s" ? 0 : 1} />
+                <AnimatedNumber value={kpi.value} decimals={kpi.unit === "MB/s" ? 0 : 1} delay={0.7 + i * 0.1} />
               </span>
               <span className="font-display text-[20px] text-muted">{kpi.unit}</span>
             </div>
 
             {/* Bottom Accent */}
-            <div className="absolute bottom-0 left-0 h-0.5 w-10 bg-orange" />
+            <motion.div
+              className="absolute bottom-0 left-0 h-[2px] bg-orange"
+              initial={{ width: 0 }}
+              animate={{ width: 40 }}
+              transition={{
+                delay: 1.0 + i * 0.1,
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1]
+              }}
+            />
           </Card>
         </motion.div>
       ))}
