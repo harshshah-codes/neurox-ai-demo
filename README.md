@@ -275,6 +275,5 @@ MIT License — see [LICENSE](./LICENSE) for details.
   <br/>
   <strong>NEUROX © 2026</strong>
 </p>
-```
 
 ---
