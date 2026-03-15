@@ -4,30 +4,43 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SparklesCore } from "@/components/ui/SparklesCore";
 import { Spotlight } from "@/components/ui/Spotlight";
-import { TextGenerateEffect } from "@/components/ui/TextGenerateEffect";
 import { MovingBorder } from "@/components/ui/MovingBorder";
 
 export function Hero() {
-  const words = "Harness the power of synchronized cognitive workflows with millisecond latency. The world's first decentralized neural processing layer.";
+  const subtitleText = "Harness the power of synchronized cognitive workflows with millisecond latency. The world's first decentralized neural processing layer.";
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16">
+    <section 
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16"
+      style={{
+        background: `radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255,77,0,0.04) 0%, transparent 70%)`
+      }}
+    >
       {/* Layer 1 - SparklesCore */}
-      <SparklesCore
-        background="transparent"
-        particleColor="#FF4D00"
-        minSize={0.4}
-        maxSize={1.2}
-        particleDensity={70}
-        speed={0.4}
-        className="absolute inset-0 w-full h-full"
-      />
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0 }}
+      >
+        <SparklesCore
+          background="transparent"
+          particleColor="#FF4D00"
+          minSize={0.4}
+          maxSize={1.4}
+          particleDensity={120}
+          speed={1.2}
+          className="absolute inset-0 w-full h-full"
+        />
+      </motion.div>
 
       {/* Layer 2 - Spotlight */}
-      <Spotlight
-        className="absolute top-0 left-1/2 -translate-x-1/2"
-        fill="#FF4D00"
-      />
+      <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] opacity-[0.07] z-0 pointer-events-none">
+        <Spotlight
+          fill="#FF4D00"
+          className="w-full h-full"
+        />
+      </div>
 
       {/* Layer 3 - Radial Gradient */}
       <div
@@ -87,18 +100,14 @@ export function Hero() {
         </motion.div>
 
         {/* Subtitle */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <motion.p
+          className="font-body text-[15px] leading-[1.7] text-[#6B6158] text-center max-w-[480px] mx-auto mb-10"
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="max-w-[480px] mx-auto mb-10"
+          transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <TextGenerateEffect
-            words={words}
-            className="font-body text-[15px] leading-[1.7] text-muted text-center"
-            duration={0.4}
-          />
-        </motion.div>
+          {subtitleText}
+        </motion.p>
 
         {/* CTA Row */}
         <motion.div

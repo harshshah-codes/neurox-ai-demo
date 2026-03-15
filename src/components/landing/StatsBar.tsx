@@ -4,15 +4,15 @@ import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
 const stats = [
-  { label: "LATENCY", value: "< 1.2", unit: "ms", trend: "▲ OPTIMAL", color: "green" },
-  { label: "THROUGHPUT", value: "4.8", unit: "Pb/s", trend: "▲ +12% NODES", color: "green" },
-  { label: "ACTIVE NODES", value: "128.4", unit: "K", trend: "▲ GLOBAL GRID", color: "green" },
-  { label: "SYNC INTEGRITY", value: "99.999", unit: "%", trend: "● MIL-SPEC", color: "orange" },
+  { label: "LATENCY", value: "< 1.2", unit: "ms", trend: "▲ OPTIMAL", trendColor: "#3DFF8F", isString: true },
+  { label: "THROUGHPUT", value: 4.8, unit: "Pb/s", trend: "▲ +12% NODES", trendColor: "#3DFF8F", isString: false },
+  { label: "ACTIVE NODES", value: 128.4, unit: "K", trend: "▲ GLOBAL GRID", trendColor: "#3DFF8F", isString: false },
+  { label: "SYNC INTEGRITY", value: 99.999, unit: "%", trend: "● MIL-SPEC", trendColor: "#FF4D00", isString: false },
 ];
 
-function AnimatedCounter({ value, inView }: { value: string; inView: boolean }) {
+function AnimatedCounter({ value, inView, isString }: { value: number | string; inView: boolean; isString?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const numericValue = parseFloat(value.replace(/[^0-9.]/g, ""));
+  const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.]/g, "")) : value;
   const motionValue = useMotionValue(0);
   const spring = useSpring(motionValue, { stiffness: 60, damping: 20 });
 
@@ -25,10 +25,10 @@ function AnimatedCounter({ value, inView }: { value: string; inView: boolean }) 
   useEffect(() => {
     const unsubscribe = spring.on("change", (latest) => {
       if (ref.current) {
-        if (value.includes("99.999")) {
+        if (String(value).includes("99.999")) {
           ref.current.textContent = latest.toFixed(3);
-        } else if (value.includes("<")) {
-          ref.current.textContent = value;
+        } else if (String(value).includes("<")) {
+          ref.current.textContent = String(value);
         } else {
           ref.current.textContent = latest.toFixed(1);
         }
@@ -37,8 +37,8 @@ function AnimatedCounter({ value, inView }: { value: string; inView: boolean }) 
     return unsubscribe;
   }, [spring, value]);
 
-  if (value.includes("<")) {
-    return <span ref={ref}>{value}</span>;
+  if (isString || String(value).includes("<")) {
+    return <span ref={ref}>{String(value)}</span>;
   }
 
   return <span ref={ref}>0</span>;
@@ -53,26 +53,26 @@ export function StatsBar() {
       <div className="grid grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, i) => (
           <motion.div
-            key={i}
+            key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="px-10 py-6 border-r border-border last:border-r-0 flex flex-col justify-center gap-1"
+            className="px-4 lg:px-10 py-4 lg:py-6 border-r border-border last:border-r-0 flex flex-col justify-center gap-1"
           >
             <span className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase mb-1">
               {stat.label}
             </span>
             <div className="flex items-baseline gap-1">
-              <span className={`font-display text-[42px] leading-[1] text-${stat.color === "green" ? "text" : "text"}`}>
-                <AnimatedCounter value={stat.value} inView={isInView} />
+              <span className="font-display text-[42px] leading-[1] text-text">
+                <AnimatedCounter value={stat.value} inView={isInView} isString={stat.isString} />
               </span>
               <span className="font-display text-[18px] leading-[1] text-muted">
                 {stat.unit}
               </span>
             </div>
             <div className="flex items-center gap-1 mt-1">
-              <ArrowUp className={`w-3 h-3 ${stat.color === "green" ? "text-green" : "text-orange"}`} />
-              <span className={`font-mono text-[10px] ${stat.color === "green" ? "text-green" : "text-orange"}`}>
+              <ArrowUp className="w-3 h-3" style={{ color: stat.trendColor }} />
+              <span className="font-mono text-[10px]" style={{ color: stat.trendColor }}>
                 {stat.trend}
               </span>
             </div>

@@ -1,6 +1,4 @@
 "use client";
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import { Lock, GitBranch, Cpu, Activity, Timer, Code2 } from "lucide-react";
 import { CardHoverEffect } from "@/components/ui/CardHoverEffect";
 
@@ -38,43 +36,23 @@ const features = [
 ];
 
 export function CoreInfrastructure() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section ref={ref} className="pt-32 pb-32 w-full">
+    <section className="pt-32 pb-32 w-full">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-20">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
+        <div
           className="mb-16"
         >
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.1, duration: 0.4 }}
-            className="font-mono text-[10px] tracking-[0.2em] text-muted mb-3 block"
-          >
+          <p className="font-mono text-[10px] tracking-[0.2em] text-[#6B6158] uppercase mb-3">
             INFRASTRUCTURE
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-[48px] leading-[1] text-text pl-4 border-l-4 border-orange"
-          >
+          </p>
+          <h2 className="font-display text-[48px] leading-[1] text-[#F5F0E8] pl-4 border-l-4 border-[#FF4D00] mb-4">
             CORE INFRASTRUCTURE
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.4 }}
-            className="max-w-[480px] font-body text-[14px] leading-[1.7] text-muted mt-4"
-          >
+          </h2>
+          <p className="font-body text-[14px] leading-[1.7] text-[#6B6158] max-w-[480px]">
             Deep integration between bio-synthetic interfaces and quantum-scaled compute clusters.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         {/* Feature Cards */}
         <CardHoverEffect items={features} />

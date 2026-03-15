@@ -31,12 +31,12 @@ export function ProtocolSequence() {
 
             {steps.map((step, i) => (
               <motion.div
-                key={i}
+                key={step.num}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="relative z-10 border border-border bg-bg-base p-8 flex flex-col"
+                className="relative z-10 border border-[#2A2420] bg-[#0A0806] p-8 flex flex-col"
               >
                 {/* Number Badge */}
                 <div className="w-10 h-10 border border-orange mb-6 flex items-center justify-center">

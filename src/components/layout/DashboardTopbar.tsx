@@ -59,7 +59,7 @@ export function DashboardTopbar() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.6, duration: 0.4, type: "spring", stiffness: 200, damping: 15 }}
         >
-          <div className="flex flex-col items-end">
+          <div className="hidden sm:flex flex-col items-end">
             <span className="font-body text-[14px] font-semibold text-text">Dr. Aris Thorne</span>
             <span className="font-mono text-[10px] text-muted">HEAD OF RESEARCH</span>
           </div>
