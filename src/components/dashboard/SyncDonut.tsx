@@ -2,7 +2,7 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell } from "recharts";
 
 const donutData = [
   { name: "Signal Integrity", value: 90, color: "#FF4D00" },
@@ -37,21 +37,21 @@ export function SyncDonut() {
   return (
     <motion.div
       className="h-full flex flex-col"
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.85 }}
       whileInView={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: true }}
     >
-      <Card className="h-full flex flex-col bg-bg-card border-border p-6">
-        <div className="relative flex justify-center">
+      <Card className="h-full flex flex-col bg-bg-card border-border p-6 overflow-hidden">
+        <div className="relative flex items-center justify-center my-4">
           {/* Rotating glow ring */}
           <motion.div
             style={{
               position: 'absolute',
-              inset: -16,
+              inset: -4,
               borderRadius: '50%',
-              background: 'conic-gradient(#FF4D00 0deg, transparent 60deg, transparent 360deg)',
-              opacity: 0.15,
+              background: 'conic-gradient(rgba(255,77,0,0.15) 0deg, transparent 60deg, transparent 360deg)',
+              pointerEvents: 'none',
             }}
             animate={{ rotate: 360 }}
             transition={{
@@ -61,8 +61,8 @@ export function SyncDonut() {
             }}
           />
           
-          <ResponsiveContainer width={160} height={160}>
-            <PieChart>
+          <div className="relative w-[180px] h-[180px]">
+            <PieChart width={180} height={180}>
               <Pie
                 data={donutData}
                 cx="50%"
@@ -71,6 +71,7 @@ export function SyncDonut() {
                 outerRadius={75}
                 startAngle={90}
                 endAngle={-270}
+                paddingAngle={0}
                 dataKey="value"
                 strokeWidth={0}
                 isAnimationActive={true}
@@ -82,13 +83,14 @@ export function SyncDonut() {
                 <Cell fill="#2A2420" />
               </Pie>
             </PieChart>
-          </ResponsiveContainer>
-          {/* Center Label */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-display text-[24px] text-text">
-              <AnimatedPercent value={90} delay={3.0} />
-            </span>
-            <span className="font-mono text-[10px] text-muted">SYNC</span>
+            
+            {/* Center Label */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="font-display text-[24px] leading-[1] text-text">
+                <AnimatedPercent value={90} delay={3.0} />
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.15em] text-muted mt-1">SYNC</span>
+            </div>
           </div>
         </div>
 
