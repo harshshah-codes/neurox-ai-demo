@@ -29,6 +29,9 @@ export function SparklesCore({
     speedX: number;
     speedY: number;
     opacity: number;
+    angle: number;
+    distance: number;
+    maxDistance: number;
   }>>([]);
 
   useEffect(() => {
@@ -44,14 +47,26 @@ export function SparklesCore({
 
     const initParticles = (width: number, height: number) => {
       const count = Math.floor((width * height) / (10000 / particleDensity));
-      particles.current = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        size: minSize + Math.random() * (maxSize - minSize),
-        speedX: (Math.random() - 0.5) * speed,
-        speedY: (Math.random() - 0.5) * speed,
-        opacity: Math.random(),
-      }));
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      particles.current = Array.from({ length: count }, () => {
+        const angle = Math.random() * Math.PI * 2;
+        const maxDistance = Math.random() * Math.max(width, height) * 0.8;
+        const distance = Math.random() * maxDistance;
+        
+        return {
+          x: centerX + Math.cos(angle) * distance,
+          y: centerY + Math.sin(angle) * distance,
+          size: minSize + Math.random() * (maxSize - minSize),
+          speedX: Math.cos(angle) * speed * (0.5 + Math.random() * 0.5),
+          speedY: Math.sin(angle) * speed * (0.5 + Math.random() * 0.5),
+          opacity: Math.random() * 0.5 + 0.3,
+          angle,
+          distance,
+          maxDistance,
+        };
+      });
     };
 
     updateDimensions();
@@ -67,6 +82,8 @@ export function SparklesCore({
     if (!ctx) return;
 
     let animationId: number;
+    const centerX = dimensions.width / 2;
+    const centerY = dimensions.height / 2;
 
     const animate = () => {
       ctx.clearRect(0, 0, dimensions.width, dimensions.height);
@@ -76,12 +93,22 @@ export function SparklesCore({
       particles.current.forEach((p) => {
         p.x += p.speedX;
         p.y += p.speedY;
-        p.opacity += (Math.random() - 0.5) * 0.02;
-
-        if (p.x < 0) p.x = dimensions.width;
-        if (p.x > dimensions.width) p.x = 0;
-        if (p.y < 0) p.y = dimensions.height;
-        if (p.y > dimensions.height) p.y = 0;
+        p.opacity += (Math.random() - 0.5) * 0.01;
+        
+        const dx = p.x - centerX;
+        const dy = p.y - centerY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (currentDistance > p.maxDistance || p.x < 0 || p.x > dimensions.width || p.y < 0 || p.y > dimensions.height) {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 50;
+          p.x = centerX + Math.cos(angle) * distance;
+          p.y = centerY + Math.sin(angle) * distance;
+          p.speedX = Math.cos(angle) * speed * (0.5 + Math.random() * 0.5);
+          p.speedY = Math.sin(angle) * speed * (0.5 + Math.random() * 0.5);
+          p.opacity = Math.random() * 0.5 + 0.3;
+        }
+        
         if (p.opacity < 0) p.opacity = 0;
         if (p.opacity > 1) p.opacity = 1;
 
@@ -97,7 +124,7 @@ export function SparklesCore({
 
     animate();
     return () => cancelAnimationFrame(animationId);
-  }, [dimensions, background, particleColor]);
+  }, [dimensions, background, particleColor, speed]);
 
   return (
     <canvas
