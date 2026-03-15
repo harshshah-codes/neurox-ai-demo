@@ -11,8 +11,9 @@ import { ProcessingDistribution } from "@/components/dashboard/ProcessingDistrib
 import { SyncDonut } from "@/components/dashboard/SyncDonut";
 import { ActionFeed } from "@/components/dashboard/ActionFeed";
 
-export function Dashboard() {
+export function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const content = children || <DashboardContent />;
 
   return (
     <div className="h-screen overflow-hidden bg-bg-base">
@@ -69,7 +70,7 @@ export function Dashboard() {
         </motion.div>
         
         <main className="overflow-y-auto p-4 md:p-6 lg:p-8" style={{ gridColumn: "2" }}>
-          <DashboardContent />
+          {content}
         </main>
       </div>
 
@@ -77,7 +78,7 @@ export function Dashboard() {
       <div className="lg:hidden h-full flex flex-col">
         <DashboardTopbar />
         <main className="flex-1 overflow-y-auto p-4">
-          <DashboardContent />
+          {content}
         </main>
       </div>
     </div>
