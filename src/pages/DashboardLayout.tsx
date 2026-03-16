@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import { CalendarDays, Download, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
@@ -16,7 +17,13 @@ export function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const content = children || <DashboardContent />;
 
   return (
-    <div className="h-screen overflow-hidden bg-bg-base">
+    <>
+      <Helmet>
+        <title>Neural Command — NEUROX Dashboard</title>
+        <meta name="description" content="Real-time precision metrics and cognitive load monitoring." />
+        <meta property="og:url" content="https://neurox-demo.vercel.app/dashboard" />
+      </Helmet>
+      <div className="h-screen overflow-hidden bg-bg-base">
       {/* Mobile sidebar toggle */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -82,6 +89,7 @@ export function DashboardLayout({ children }: { children?: React.ReactNode }) {
         </main>
       </div>
     </div>
+    </>
   );
 }
 

@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/Navbar";
 import { PricingCards } from "@/components/pricing/PricingCards";
 import { Testimonials } from "@/components/pricing/Testimonials";
@@ -7,7 +8,13 @@ import { BackgroundBeams } from "@/components/ui/BackgroundBeams";
 
 export function Pricing() {
   return (
-    <div className="min-h-screen bg-bg-base relative overflow-hidden">
+    <>
+      <Helmet>
+        <title>Neon Precision Pricing — NEUROX</title>
+        <meta name="description" content="Select your synchronization tier and unlock the hardware-level neural interface." />
+        <meta property="og:url" content="https://neurox-demo.vercel.app/pricing" />
+      </Helmet>
+      <div className="min-h-screen bg-bg-base relative overflow-hidden">
       {/* Background */}
       <BackgroundBeams className="opacity-60" />
       <div
@@ -97,5 +104,6 @@ export function Pricing() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

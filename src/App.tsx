@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { HelmetProvider } from "react-helmet-async";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Navbar } from "@/components/layout/Navbar";
 import { Landing } from "@/pages/Landing";
@@ -104,10 +105,12 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <Router>
-      <CustomCursor />
-      <AnimatedRoutes />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <CustomCursor />
+        <AnimatedRoutes />
+      </Router>
+    </HelmetProvider>
   );
 }
 
